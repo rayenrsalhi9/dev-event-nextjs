@@ -24,7 +24,6 @@ const BookingSchema = new Schema<IBooking>(
       required: [true, 'Email is required'],
       trim: true,
       lowercase: true,
-      unique: true,
       validate: {
         validator: function (email: string) {
           return validator.isEmail(email, { allow_utf8_local_part: true });

@@ -145,15 +145,17 @@ EventSchema.pre('save', function (next: (err?: Error) => void) {
     if (dateRegex.test(event.date)) {
       // If already in correct format, validate it's a real date
       const parsedDate = parseISO(event.date);
-      if (isValid(parsedDate)) {
-        event.date = format(parsedDate, 'yyyy-MM-dd');
+      if (!isValid(parsedDate)) {
+        return next(new Error('Invalid date format. Use YYYY-MM-DD.'));
       }
+      event.date = format(parsedDate, 'yyyy-MM-dd');
     } else {
       // Try to parse other formats and convert to date-only string
       const parsedDate = parseISO(event.date);
-      if (isValid(parsedDate)) {
-        event.date = format(parsedDate, 'yyyy-MM-dd');
+      if (!isValid(parsedDate)) {
+        return next(new Error('Invalid date format. Use YYYY-MM-DD.'));
       }
+      event.date = format(parsedDate, 'yyyy-MM-dd');
     }
   }
 

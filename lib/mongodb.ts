@@ -14,10 +14,6 @@ declare global {
 // Connection configuration with proper typing
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-}
-
 // Create a cached connection object to prevent multiple connections during development
 const cached: MongooseConnection = global.__mongoose || {
   conn: null,
@@ -37,6 +33,9 @@ if (!global.__mongoose) {
  * @throws {Error} If the connection fails or MONGODB_URI is not defined
  */
 export async function connectDB(): Promise<Mongoose> {
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  }
   // Return existing connection if already established and active
   if (cached.conn && isConnected()) {
     return cached.conn;
@@ -84,7 +83,6 @@ export async function disconnectDB(): Promise<void> {
     await cached.conn.disconnect();
     cached.conn = null;
     cached.promise = null;
-    global.mongoose = undefined;
     global.__mongoose = undefined;
     console.log('🔌 MongoDB disconnected');
   }
