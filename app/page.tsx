@@ -1,15 +1,30 @@
 import ExploreBtn from "@/components/ExploreBtn";
+import EventCard from "@/components/EventCard";
+import { events } from "@/lib/constants";
 
 const page = () => {
   return (
-    <section className="text-center text-white py-16 px-4 mx-auto">
-      <h1 className="text-6xl font-bold leading-tight bg-linear-to-b from-white to-[#00cbff] bg-clip-text text-transparent">
+    <section className="text-white py-16 px-8 max-w-6xl mx-auto">
+      <h1 className="text-center text-6xl font-bold leading-tight bg-linear-to-b from-white to-[#00cbff] bg-clip-text text-transparent">
         The Hub for Every Dev <br /> Event You Can&apos;t Miss
       </h1>
-      <p className="mt-3 text-[#E7F2FF] text-lg">
+      <p className="mt-3 text-center text-[#E7F2FF] text-lg">
         Hackathons, Meetups, and Conferences, All in One Place
       </p>
       <ExploreBtn />
+
+      <div className="mt-20 space-y-7">
+        <h3 className="text-2xl font-bold leading-tight">Featured Events</h3>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          {
+            events.map(event => (
+              <li key={event.title}>
+                <EventCard {...event} />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </section>
   )
 }
