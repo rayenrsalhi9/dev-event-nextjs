@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, model } from 'mongoose';
+import { parseISO, format, isValid } from 'date-fns';
 
 // Interface for Event document
 export interface IEvent extends Document {
@@ -128,7 +129,7 @@ function generateSlug(title: string): string {
 }
 
 // Pre-save hook for slug generation, date normalization, and time formatting
-EventSchema.pre('save', function (next) {
+EventSchema.pre('save', function (next: (err?: Error) => void) {
   const event = this as IEvent;
 
   // Generate slug only if title is modified or slug doesn't exist
@@ -136,11 +137,23 @@ EventSchema.pre('save', function (next) {
     event.slug = generateSlug(event.title);
   }
 
-  // Normalize date to ISO format (YYYY-MM-DD)
+  // Normalize date to ISO format (YYYY-MM-DD) without UTC conversion
   if (event.date) {
-    const dateObj = new Date(event.date);
-    if (!isNaN(dateObj.getTime())) {
-      event.date = dateObj.toISOString().split('T')[0];
+    // Validate and accept only strict YYYY-MM-DD format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    
+    if (dateRegex.test(event.date)) {
+      // If already in correct format, validate it's a real date
+      const parsedDate = parseISO(event.date);
+      if (isValid(parsedDate)) {
+        event.date = format(parsedDate, 'yyyy-MM-dd');
+      }
+    } else {
+      // Try to parse other formats and convert to date-only string
+      const parsedDate = parseISO(event.date);
+      if (isValid(parsedDate)) {
+        event.date = format(parsedDate, 'yyyy-MM-dd');
+      }
     }
   }
 

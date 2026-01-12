@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, model, Types } from 'mongoose';
+import validator from 'validator';
 import { Event } from './event.model';
 
 // Interface for Booking document
@@ -23,13 +24,12 @@ const BookingSchema = new Schema<IBooking>(
       required: [true, 'Email is required'],
       trim: true,
       lowercase: true,
+      unique: true,
       validate: {
         validator: function (email: string) {
-          // Email validation regex pattern
-          const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-          return emailRegex.test(email);
+          return validator.isEmail(email, { allow_utf8_local_part: true });
         },
-        message: 'Please provide a valid email address',
+        message: 'Invalid email',
       },
     },
   },
@@ -42,9 +42,14 @@ const BookingSchema = new Schema<IBooking>(
 BookingSchema.pre('save', async function (next) {
   const booking = this as IBooking;
 
+  // Skip validation for existing documents when eventId hasn't changed
+  if (!this.isNew && !this.isModified('eventId')) {
+    return next();
+  }
+
   try {
-    // Check if the referenced event exists
-    const eventExists = await Event.findById(booking.eventId);
+    // Check if the referenced event exists using lightweight existence check
+    const eventExists = await Event.exists({ _id: booking.eventId });
     
     if (!eventExists) {
       throw new Error(`Event with ID ${booking.eventId} does not exist`);

@@ -8,25 +8,25 @@ interface MongooseConnection {
 
 // Extend the global scope to include our cached connection
 declare global {
-  var mongoose: MongooseConnection | undefined;
+  var __mongoose: MongooseConnection | undefined;
 }
 
 // Connection configuration with proper typing
-const MONGODB_URI = process.env.MONGODB_URI!;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
 
 // Create a cached connection object to prevent multiple connections during development
-const cached: MongooseConnection = global.mongoose || {
+const cached: MongooseConnection = global.__mongoose || {
   conn: null,
   promise: null,
 };
 
 // Store the cached connection in the global scope for development
-if (!global.mongoose) {
-  global.mongoose = cached;
+if (!global.__mongoose) {
+  global.__mongoose = cached;
 }
 
 /**
@@ -37,8 +37,8 @@ if (!global.mongoose) {
  * @throws {Error} If the connection fails or MONGODB_URI is not defined
  */
 export async function connectDB(): Promise<Mongoose> {
-  // Return existing connection if already established
-  if (cached.conn) {
+  // Return existing connection if already established and active
+  if (cached.conn && isConnected()) {
     return cached.conn;
   }
 
@@ -51,20 +51,26 @@ export async function connectDB(): Promise<Mongoose> {
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       console.log('✅ MongoDB connected successfully');
       return mongoose;
     });
   }
 
   try {
-    // Await the connection promise
-    cached.conn = await cached.promise;
-    return cached.conn;
+    // Await the connection promise and verify it's active
+    const conn = await cached.promise;
+    if (conn.connection.readyState === 1) {
+      cached.conn = conn;
+      return cached.conn;
+    } else {
+      throw new Error('MongoDB connection is not ready');
+    }
   } catch (error) {
     // Reset the promise on connection failure
     cached.promise = null;
-    console.error('❌ MongoDB connection failed:', error);
+    cached.conn = null;
+    console.error('❌ MongoDB connection failed:', (error as Error).message);
     throw error;
   }
 }
@@ -79,6 +85,7 @@ export async function disconnectDB(): Promise<void> {
     cached.conn = null;
     cached.promise = null;
     global.mongoose = undefined;
+    global.__mongoose = undefined;
     console.log('🔌 MongoDB disconnected');
   }
 }
