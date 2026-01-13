@@ -1,8 +1,12 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
-import { events } from "@/lib/constants";
+import { IEvent } from "@/database";
 
-const page = () => {
+const page = async () => {
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`);
+  const {events} = await res.json();
+
   return (
     <section className="text-white py-16 px-8 max-w-6xl mx-auto">
       <h1 className="text-center text-6xl font-bold leading-tight bg-linear-to-b from-white to-[#00cbff] bg-clip-text text-transparent">
@@ -17,11 +21,16 @@ const page = () => {
         <h3 className="text-2xl font-bold leading-tight">Featured Events</h3>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {
-            events.map(event => (
+            events && events.length > 0 ?
+            events.map((event: IEvent) => (
               <li key={event.title}>
                 <EventCard {...event} />
               </li>
-            ))
+            )) : (
+              <li className="col-span-3">
+                <p className="text-center text-[#E7F2FF] text-lg">No events available at the moment.</p>
+              </li>
+            )
           }
         </ul>
       </div>
