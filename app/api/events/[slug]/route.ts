@@ -10,14 +10,10 @@ export async function GET({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     if (!slug) return NextResponse.json({ message: 'Event slug is required' }, { status: 400 });
     
-    const event = await Event.findOne({ slug });
-    
-    if (!event) {
-      return NextResponse.json(
-        { message: 'Event not found' }, 
-        { status: 404 }
-      );
-    }
+    const sanitizedSlug = slug.trim().toLowerCase();
+
+    const event = await Event.findOne({ slug: sanitizedSlug }).lean();
+    if (!event) return NextResponse.json({ message: 'Event not found' }, { status: 404 });
     
     return NextResponse.json({message: 'Event fetched successfully',event }, { status: 200 });
     
