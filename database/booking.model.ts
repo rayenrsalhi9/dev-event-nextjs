@@ -54,7 +54,7 @@ BookingSchema.pre('save', async function () {
       if (error instanceof Error && error.name === 'ValidationError') {
         throw error;
       }
-      const validationError = new Error('Invalid events ID format or database error');
+      const validationError = new Error('Invalid event ID format or database error');
       validationError.name = 'ValidationError';
       throw validationError;
     }
@@ -70,7 +70,7 @@ BookingSchema.index({ eventId: 1, createdAt: -1 });
 // Create index on email for user booking lookups
 BookingSchema.index({ email: 1 });
 
-// Enforce one booking per events per email
+// Enforce one event booking  per email
 BookingSchema.index({ eventId: 1, email: 1 }, { unique: true, name: 'uniq_event_email' });
 const Booking = models.Booking || model<IBooking>('Booking', BookingSchema);
 
