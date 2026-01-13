@@ -21,6 +21,22 @@ export async function POST(req: NextRequest) {
     const file = formData.get('image') as File;
     if (!file) return NextResponse.json({message: 'File is required'}, { status: 400 });
 
+    // validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        return NextResponse.json(
+          {message: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.'}, { status: 400 }
+        );
+    }
+
+    // validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+        return NextResponse.json(
+          {message: 'File size exceeds 5MB limit.'}, { status: 400 }
+        );
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
