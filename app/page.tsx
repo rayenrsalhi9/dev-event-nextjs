@@ -6,8 +6,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = async () => {
 
-  const res = await fetch(`${BASE_URL}/api/events`);
-  const {events} = await res.json();
+  let events: IEvent[] = [];
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/events`);
+    const {events: eventsData} = await res.json();
+    events = eventsData || [];
+  } catch (error) {
+    console.error("Error fetching events:", error);
+  }
 
   return (
     <section className="text-white py-16 px-8 max-w-6xl mx-auto">
@@ -25,7 +32,7 @@ const page = async () => {
           {
             events && events.length > 0 ?
             events.map((event: IEvent) => (
-              <li key={event.title}>
+              <li key={event.slug}>
                 <EventCard {...event} />
               </li>
             )) : (
