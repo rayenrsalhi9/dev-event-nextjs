@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Event } from "@/database";
 
-export async function GET({ params }: { params: Promise<{ slug: string }> }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET({ req, params }: { req: NextRequest, params: Promise<{ slug: string }> }) {
   try {
     
     await connectDB();
