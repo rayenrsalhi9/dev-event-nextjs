@@ -73,7 +73,7 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
                     }
                 </ul>
             </div>
-            <div className="w-full max-w-full md:max-w-[800px]">
+            <div className="mt-8 w-full max-w-full md:max-w-[800px]">
                 <h3 className="text-xl sm:text-2xl font-bold leading-tight">About the organizer</h3>
                 <p className="mt-3 text-[#E7F2FF] text-base sm:text-lg">
                     {event.organizer}
