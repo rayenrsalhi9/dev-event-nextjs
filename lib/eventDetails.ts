@@ -4,6 +4,6 @@ export function safeJsonParser<T>(jsonString: string, fallback: T): T | null {
         return JSON.parse(jsonString);
     } catch (error) {
         console.error("Error parsing JSON:", error);
-        return null;
+        return fallback;
     }
 }
