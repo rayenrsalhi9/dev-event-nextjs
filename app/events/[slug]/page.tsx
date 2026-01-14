@@ -1,9 +1,14 @@
 import Image from "next/image";
 import EventInfoSpan from "@/components/EventInfoSpan";
+import { safeJsonParser } from "@/lib/eventDetails";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = async({ params }: { params: Promise<{slug: string}> }) => {
+
+    if (!BASE_URL) {
+      throw new Error("Environment variable is not configured");
+    }
 
     const {slug} = await params;
     const res = await fetch(`${BASE_URL}/api/events/${slug}`);
@@ -11,6 +16,9 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
       throw new Error(`Failed to fetch event: ${res.status}`);
     }
     const {event} = await res.json();
+
+    const agenda = safeJsonParser<string[]>(event.agenda, []);
+    const tags = safeJsonParser<string[]>(event.tags, []);
 
     return (
         <section className="text-white py-16 px-8 max-w-4xl min-h-screen">
@@ -39,17 +47,17 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
             </div>
             <div className="mt-10">
                 <h3 className="text-2xl font-bold leading-tight">Event Details</h3>
-                <EventInfoSpan src="/icons/calendar.svg" alt="calendar icon" key="Date" value={event.date} />
-                <EventInfoSpan src="/icons/pin.svg" alt="pin icon" key="Venue" value={`${event.venue}, ${event.location}`} />
-                <EventInfoSpan src="/icons/clock.svg" alt="clock icon" key="Time" value={event.time} />
-                <EventInfoSpan src="/icons/mode.svg" alt="mode icon" key="Mode" value={event.mode} />
-                <EventInfoSpan src="/icons/audience.svg" alt="audience icon" key="Audience" value={event.audience} />
+                <EventInfoSpan src="/icons/calendar.svg" alt="calendar icon" label="Date" value={event.date} />
+                <EventInfoSpan src="/icons/pin.svg" alt="pin icon" label="Venue" value={`${event.venue}, ${event.location}`} />
+                <EventInfoSpan src="/icons/clock.svg" alt="clock icon" label="Time" value={event.time} />
+                <EventInfoSpan src="/icons/mode.svg" alt="mode icon" label="Mode" value={event.mode} />
+                <EventInfoSpan src="/icons/audience.svg" alt="audience icon" label="Audience" value={event.audience} />
             </div>
             <div className="mt-10">
                 <h3 className="text-2xl font-bold leading-tight">Agenda</h3>
                 <ul className="mt-5">
                 {
-                    JSON.parse(event.agenda).map((item: string, index: number) => (
+                    agenda?.map((item: string, index: number) => (
                         <li key={index} className="mt-5 text-[#E7F2FF] text-lg flex items-center">
                             <span className="inline-block w-2 h-2 bg-[#E7F2FF] rounded-full mr-3" />
                             {item}
@@ -66,7 +74,7 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
             </div>
             <div className="mt-10 flex flex-wrap gap-2">
                 {
-                    JSON.parse(event.tags).map((tag: string, index: number) => (
+                    tags?.map((tag: string, index: number) => (
                         <span key={index} className="inline-block px-4 py-2 rounded-lg text-[#E7F2FF] bg-[#0D161A]">
                             {tag}
                         </span>
