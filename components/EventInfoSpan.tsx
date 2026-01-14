@@ -9,9 +9,9 @@ type EventInfoSpanProps = {
 
 const EventInfoSpan = ({ src, alt, label, value }: EventInfoSpanProps) => {
     return (
-        <p className="mt-5 text-[#E7F2FF] text-lg flex items-center">
-            <Image src={src} alt={alt} width={24} height={24} className="mr-2" />
-            {label}: {value}
+        <p className="mt-4 sm:mt-5 text-[#E7F2FF] text-base sm:text-lg flex items-center">
+            <Image src={src} alt={alt} width={20} height={20} className="mr-2 sm:w-6 sm:h-6" />
+            <span className="break-words">{label}: {value}</span>
         </p>
     )
 }
