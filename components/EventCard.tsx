@@ -1,10 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
-import type { EventCardProps } from "@/lib/constants"
+import { IEvent } from "@/database"
 
-const EventCard = ({ image, title, location, date, time, slug }: EventCardProps) => {
+const EventCard = ({ image, title, location, date, time, slug }: IEvent) => {
   return (
-    <Link href={`/events/${slug}`}>
+    <Link href={`/event/${slug}`}>
       <Image 
         src={image} 
         alt={title} 
