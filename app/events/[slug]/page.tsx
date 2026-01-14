@@ -1,6 +1,7 @@
 import Image from "next/image";
 import EventInfoSpan from "@/components/EventInfoSpan";
 import { safeJsonParser } from "@/lib/eventDetails";
+import EventBookingCta from "@/components/EventBookingCta";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -21,61 +22,67 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
     const tags = safeJsonParser<string[]>(event.tags, []);
 
     return (
-        <section className="text-white py-16 px-8 max-w-4xl min-h-screen">
-            <div>
-                <h1 className="text-6xl font-semibold leading-tight">
+        <section className="text-white py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 w-full max-w-6xl mx-auto min-h-screen">
+            <div className="w-full max-w-full md:max-w-[800px]">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight">
                     {event.title}
                 </h1>
-                <p className="mt-3 text-[#E7F2FF] text-lg">
+                <p className="mt-3 text-[#E7F2FF] text-base sm:text-lg">
                     {event.description}
                 </p>
             </div>
-            <div className="mt-10">
-                <Image
-                    src={event.image}
-                    alt={event.title}
-                    width={810}
-                    height={457}
-                    className="rounded-2xl"
-                />
+            <div className="mt-8 sm:mt-10 flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-10">
+                <div className="w-full">
+                    <Image
+                        src={event.image}
+                        alt={event.title}
+                        width={810}
+                        height={457}
+                        className="rounded-2xl w-full h-auto max-w-full md:max-w-[810px]"
+                        style={{ objectFit: 'cover' }}
+                    />
+                </div>
+                <div className="w-full lg:w-auto lg:shrink-0">
+                    <EventBookingCta />
+                </div>
             </div>
-            <div className="mt-10">
-                <h3 className="text-2xl font-bold leading-tight">Overview</h3>
-                <p className="mt-5 text-[#E7F2FF] text-lg">
+            <div className="mt-8 sm:mt-10 w-full max-w-full md:max-w-[800px]">
+                <h3 className="text-xl sm:text-2xl font-bold leading-tight">Overview</h3>
+                <p className="mt-4 sm:mt-5 text-[#E7F2FF] text-base sm:text-lg">
                     {event.overview}
                 </p>
             </div>
-            <div className="mt-10">
-                <h3 className="text-2xl font-bold leading-tight">Event Details</h3>
+            <div className="mt-8 sm:mt-10 w-full max-w-full md:max-w-[800px]">
+                <h3 className="text-xl sm:text-2xl font-bold leading-tight">Event Details</h3>
                 <EventInfoSpan src="/icons/calendar.svg" alt="calendar icon" label="Date" value={event.date} />
                 <EventInfoSpan src="/icons/pin.svg" alt="pin icon" label="Venue" value={`${event.venue}, ${event.location}`} />
                 <EventInfoSpan src="/icons/clock.svg" alt="clock icon" label="Time" value={event.time} />
                 <EventInfoSpan src="/icons/mode.svg" alt="mode icon" label="Mode" value={event.mode} />
                 <EventInfoSpan src="/icons/audience.svg" alt="audience icon" label="Audience" value={event.audience} />
             </div>
-            <div className="mt-10">
-                <h3 className="text-2xl font-bold leading-tight">Agenda</h3>
-                <ul className="mt-5">
-                {
-                    agenda?.map((item: string, index: number) => (
-                        <li key={index} className="mt-5 text-[#E7F2FF] text-lg flex items-center">
-                            <span className="inline-block w-2 h-2 bg-[#E7F2FF] rounded-full mr-3" />
-                            {item}
-                        </li>
-                    ))
-                }
-            </ul>
+            <div className="mt-8 sm:mt-10 w-full max-w-full md:max-w-[800px]">
+                <h3 className="text-xl sm:text-2xl font-bold leading-tight">Agenda</h3>
+                <ul className="mt-4 sm:mt-5">
+                    {
+                        agenda?.map((item: string, index: number) => (
+                            <li key={index} className="mt-3 sm:mt-5 text-[#E7F2FF] text-base sm:text-lg flex items-center">
+                                <span className="inline-block w-2 h-2 bg-[#E7F2FF] rounded-full mr-3" />
+                                {item}
+                            </li>
+                        ))
+                    }
+                </ul>
             </div>
-            <div className="mt-10">
-                <h3 className="text-2xl font-bold leading-tight">About the organizer</h3>
-                <p className="mt-3 text-[#E7F2FF] text-lg">
+            <div className="w-full max-w-full md:max-w-[800px]">
+                <h3 className="text-xl sm:text-2xl font-bold leading-tight">About the organizer</h3>
+                <p className="mt-3 text-[#E7F2FF] text-base sm:text-lg">
                     {event.organizer}
                 </p>
             </div>
-            <div className="mt-10 flex flex-wrap gap-2">
+            <div className="mt-8 sm:mt-10 flex flex-wrap gap-2 w-full max-w-full md:max-w-[800px]">
                 {
                     tags?.map((tag: string, index: number) => (
-                        <span key={index} className="inline-block px-4 py-2 rounded-lg text-[#E7F2FF] bg-[#0D161A]">
+                        <span key={index} className="inline-block px-3 sm:px-4 py-2 rounded-lg text-[#E7F2FF] bg-[#0D161A] text-sm sm:text-base">
                             {tag}
                         </span>
                     ))
