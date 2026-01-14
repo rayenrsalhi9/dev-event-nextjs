@@ -6,7 +6,7 @@ type EventCardProps = Pick<IEvent, 'image' | 'title' | 'location' | 'date' | 'ti
 
 const EventCard = ({ image, title, location, date, time, slug }: EventCardProps) => {
   return (
-    <Link href={`/event/${slug}`}>
+    <Link href={`/events/${slug}`}>
       <Image 
         src={image} 
         alt={title} 
