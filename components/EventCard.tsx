@@ -2,7 +2,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { IEvent } from "@/database"
 
-const EventCard = ({ image, title, location, date, time, slug }: IEvent) => {
+type EventCardProps = Pick<IEvent, 'image' | 'title' | 'location' | 'date' | 'time' | 'slug'>
+
+const EventCard = ({ image, title, location, date, time, slug }: EventCardProps) => {
   return (
     <Link href={`/event/${slug}`}>
       <Image 
