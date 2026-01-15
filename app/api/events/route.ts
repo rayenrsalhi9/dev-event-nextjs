@@ -18,6 +18,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({message: 'Invalid form data'}, { status: 400 });
     }
 
+    const requiredFields = ['title', 'description', 'overview', 'image', 'venue', 'location', 'date', 'time', 'mode', 'audience', 'agenda', 'organizer', 'tags'];
+
+    const missingFields = requiredFields.filter(field => !event[field]);
+    if (missingFields.length > 0) {
+        return NextResponse.json(
+          { message: `Missing required fields: ${missingFields.join(', ')}`}, 
+          { status: 400 }
+        );
+    }
+
     const file = formData.get('image') as File;
     if (!file) return NextResponse.json({message: 'File is required'}, { status: 400 });
 

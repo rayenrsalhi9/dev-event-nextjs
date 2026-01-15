@@ -6,6 +6,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = async () => {
 
+  if (!BASE_URL) {
+    throw new Error("NEXT_PUBLIC_BASE_URL is not defined");
+  }
+
   let events: IEvent[] = [];
 
   try {
@@ -21,7 +25,7 @@ const page = async () => {
 
   return (
     <section className="text-white py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-      <h1 className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-linear-to-b from-white to-[#00cbff] bg-clip-text text-transparent">
+      <h1 className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-b from-white to-[#00cbff] bg-clip-text text-transparent">
         The Hub for Every Dev <br /> Event You Can&apos;t Miss
       </h1>
       <p className="mt-3 text-center text-[#E7F2FF] text-base sm:text-lg">

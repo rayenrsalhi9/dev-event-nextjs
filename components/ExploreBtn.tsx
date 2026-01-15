@@ -6,7 +6,7 @@ const ExploreBtn = () => {
       Explore Events
       <Image
         src="/icons/arrow-down.svg"
-        alt="arrow-down"
+        alt=""
         width={16}
         height={16}
         className="sm:w-5 sm:h-5 transition-transform duration-200 group-hover:translate-y-0.5"
