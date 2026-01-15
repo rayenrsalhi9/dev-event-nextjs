@@ -15,9 +15,15 @@ const Navbar = () => {
           <p className="text-white italic font-bold text-lg hidden md:block">DevEvent</p>
         </Link>
         <ul className="flex items-center space-x-8 text-[#DCFFF8]">
+          <li>
             <Link href="/" className="py-4">Home</Link>
+          </li>
+          <li>
             <Link href="/" className="py-4">Events</Link>
+          </li>
+          <li>
             <Link href="/" className="py-4">Create Event</Link>
+          </li>
         </ul>
       </nav>
     </header>

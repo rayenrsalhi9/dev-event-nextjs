@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
   return (
     <html lang="en">
-      <body className={`${schibsted_grotesk.className} antialiased bg-linear-to-b from-[#0a1929] via-[#050a14] to-[#020408]`}>
+      <body className={`${schibsted_grotesk.className} antialiased bg-gradient-to-b from-[#0a1929] via-[#050a14] to-[#020408]`}>
         <Providers>
           <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
             <LightRays
