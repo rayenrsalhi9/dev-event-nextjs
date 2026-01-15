@@ -43,13 +43,8 @@ const BookingSchema = new Schema<IBooking>(
 
 // Static method to validate event existence before creating booking
 BookingSchema.statics.validateEventExists = async function (eventId: Types.ObjectId): Promise<boolean> {
-  try {
-    const eventExists = await Event.findById(eventId).select('_id');
-    return !!eventExists;
-  } catch (error) {
-    console.error('Error validating event existence:', error);
-    return false;
-  }
+  const eventExists = await Event.findById(eventId).select('_id');
+  return !!eventExists;
 };
 
 // Create index on eventId for faster queries
