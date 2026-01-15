@@ -96,16 +96,20 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
             </div>
             <div className="mt-8 sm:mt-10 w-full max-w-full md:max-w-[800px]">
                 <h3 className="text-xl sm:text-2xl font-bold leading-tight">Similar Events</h3>
-                <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <ul className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {
                         similarEvents?.length > 0 ?
                         similarEvents?.map((event: IEvent) => (
-                            <EventCard key={event.slug} {...event} />  
+                            <li key={event.slug}>
+                                <EventCard {...event} />  
+                            </li>
                         )) : (
-                            <p className="text-[#E7F2FF] col-span-1 sm:col-span-2 lg:col-span-3 text-base sm:text-lg not-visited:">No similar events available at the moment.</p>    
+                            <li className="col-span-1 sm:col-span-2 lg:col-span-3">
+                                <p className="text-[#E7F2FF] text-base sm:text-lg">No similar events available at the moment.</p>    
+                            </li>
                         )
                     }
-                </div>
+                </ul>
             </div>
         </section>
     )

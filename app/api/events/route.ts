@@ -47,8 +47,25 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const tags = JSON.parse(event.tags as string);
-    const agenda = JSON.parse(event.agenda as string);
+    let tags, agenda
+
+    try {
+        tags = JSON.parse(event.tags as string);
+        agenda = JSON.parse(event.agenda as string);
+    } catch (e) {
+        console.error('Error parsing tags or agenda:', e);
+        return NextResponse.json(
+            { message: 'Invalid JSON format for tags or agenda' }, 
+            { status: 400 }
+        );
+    }
+
+    if(!Array.isArray(tags) || !Array.isArray(agenda)) {
+        return NextResponse.json(
+            { message: 'Tags and agenda must be arrays' }, 
+            { status: 400 }
+        );
+    }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
