@@ -19,13 +19,12 @@ const Navbar = () => {
             <Link href="/" className="py-4">Home</Link>
           </li>
           <li>
-            <Link href="/" className="py-4">Events</Link>
+            <Link href="/events" className="py-4">Events</Link>
           </li>
           <li>
-            <Link href="/" className="py-4">Create Event</Link>
+            <Link href="/create-event" className="py-4">Create Event</Link>
           </li>
-        </ul>
-      </nav>
+        </ul>      </nav>
     </header>
   )
 }
