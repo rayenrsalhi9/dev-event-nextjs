@@ -47,6 +47,26 @@ export async function POST(req: NextRequest) {
         );
     }
 
+    let tags, agenda
+
+    try {
+        tags = JSON.parse(event.tags as string);
+        agenda = JSON.parse(event.agenda as string);
+    } catch (e) {
+        console.error('Error parsing tags or agenda:', e);
+        return NextResponse.json(
+            { message: 'Invalid JSON format for tags or agenda' }, 
+            { status: 400 }
+        );
+    }
+
+    if(!Array.isArray(tags) || !Array.isArray(agenda)) {
+        return NextResponse.json(
+            { message: 'Tags and agenda must be arrays' }, 
+            { status: 400 }
+        );
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
@@ -62,7 +82,7 @@ export async function POST(req: NextRequest) {
 
     event.image = (uploadResult as { secure_url: string }).secure_url;
 
-    const generatedEvent = await Event.create(event);
+    const generatedEvent = await Event.create({ ...event, tags, agenda });
 
     return NextResponse.json({ 
         message: 'Event created successfully',
