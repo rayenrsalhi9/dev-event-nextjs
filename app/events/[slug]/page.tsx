@@ -4,20 +4,25 @@ import { safeJsonParser } from "@/lib/eventDetails";
 import EventBookingCta from "@/components/EventBookingCta";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+if (!BASE_URL) throw new Error("Environment variable is not configured");
 
 const page = async({ params }: { params: Promise<{slug: string}> }) => {
 
-    if (!BASE_URL) {
-      throw new Error("Environment variable is not configured");
-    }
-
     const {slug} = await params;
-    const res = await fetch(`${BASE_URL}/api/events/${slug}`);
+    
+    // Validate slug format (alphanumeric, hyphens, underscores)
+    if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
+      throw new Error("Invalid slug format");
+    }
+    
+    const res = await fetch(`${BASE_URL}/api/events/${slug}`, {
+      next: { revalidate: 3600 }, // or { cache: 'force-cache' } for static
+      signal: AbortSignal.timeout(5000), // 5 second timeout
+    });
     if (!res.ok) {
-      throw new Error(`Failed to fetch event: ${res.status}`);
+      throw new Error(`Failed to fetch event ${slug}: ${res.status}`);
     }
     const {event} = await res.json();
-
     const agenda = safeJsonParser<string[]>(event.agenda, []);
     const tags = safeJsonParser<string[]>(event.tags, []);
 
