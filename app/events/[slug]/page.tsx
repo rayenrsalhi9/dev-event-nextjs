@@ -1,7 +1,9 @@
 import Image from "next/image";
+import type { IEvent } from "@/database";
 import EventInfoSpan from "@/components/EventInfoSpan";
-import { safeJsonParser } from "@/lib/eventDetails";
 import EventBookingCta from "@/components/EventBookingCta";
+import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import EventCard from "@/components/EventCard";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 if (!BASE_URL) throw new Error("Environment variable is not configured");
@@ -23,8 +25,7 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
       throw new Error(`Failed to fetch event ${slug}: ${res.status}`);
     }
     const {event} = await res.json();
-    const agenda = safeJsonParser<string[]>(event.agenda, []);
-    const tags = safeJsonParser<string[]>(event.tags, []);
+    const similarEvents = await getSimilarEventsBySlug(slug);
 
     return (
         <section className="text-white py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 w-full max-w-6xl mx-auto min-h-screen">
@@ -69,7 +70,7 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
                 <h3 className="text-xl sm:text-2xl font-bold leading-tight">Agenda</h3>
                 <ul className="mt-4 sm:mt-5">
                     {
-                        agenda?.map((item: string, index: number) => (
+                        event.agenda?.map((item: string, index: number) => (
                             <li key={index} className="mt-3 sm:mt-5 text-[#E7F2FF] text-base sm:text-lg flex items-center">
                                 <span className="inline-block w-2 h-2 bg-[#E7F2FF] rounded-full mr-3" />
                                 {item}
@@ -86,12 +87,25 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
             </div>
             <div className="mt-8 sm:mt-10 flex flex-wrap gap-2 w-full max-w-full md:max-w-[800px]">
                 {
-                    tags?.map((tag: string, index: number) => (
+                    event.tags?.map((tag: string, index: number) => (
                         <span key={index} className="inline-block px-3 sm:px-4 py-2 rounded-lg text-[#E7F2FF] bg-[#0D161A] text-sm sm:text-base">
                             {tag}
                         </span>
                     ))
                 }
+            </div>
+            <div className="mt-8 sm:mt-10 w-full max-w-full md:max-w-[800px]">
+                <h3 className="text-xl sm:text-2xl font-bold leading-tight">Similar Events</h3>
+                <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {
+                        similarEvents?.length > 0 ?
+                        similarEvents?.map((event: IEvent) => (
+                            <EventCard key={event.slug} {...event} />  
+                        )) : (
+                            <p className="text-[#E7F2FF] col-span-1 sm:col-span-2 lg:col-span-3 text-base sm:text-lg not-visited:">No similar events available at the moment.</p>    
+                        )
+                    }
+                </div>
             </div>
         </section>
     )
