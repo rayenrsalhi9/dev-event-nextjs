@@ -29,6 +29,11 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
       throw new Error(`Failed to fetch event ${slug}: ${res.status}`);
     }
     const {event} = await res.json();
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    'use cache'
+    cacheLife('hours')
+
     const similarEvents = await getSimilarEventsBySlug(slug);
 
     return (
