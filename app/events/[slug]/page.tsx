@@ -53,7 +53,7 @@ const page = async({ params }: { params: Promise<{slug: string}> }) => {
                     />
                 </div>
                 <div className="w-full lg:w-auto lg:shrink-0">
-                    <EventBookingCta />
+                    <EventBookingCta eventId={event._id} eventSlug={event.slug} />
                 </div>
             </div>
             <div className="mt-8 sm:mt-10 w-full max-w-full md:max-w-[800px]">
