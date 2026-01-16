@@ -14,18 +14,18 @@ const page = async () => {
     throw new Error("NEXT_PUBLIC_BASE_URL is not defined");
   }
 
-  let events: IEvent[] = [];
+  const events: IEvent[] = [];
 
-  try {
-    const res = await fetch(`${BASE_URL}/api/events`);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch events: ${res.status}`);
-    }
-    const {events: eventsData} = await res.json();
-    events = eventsData || [];
-  } catch (error) {
-    console.error("Error fetching events:", error);
-  }
+  // try {
+  //   const res = await fetch(`${BASE_URL}/api/events`);
+  //   if (!res.ok) {
+  //     throw new Error(`Failed to fetch events: ${res.status}`);
+  //   }
+  //   const {events: eventsData} = await res.json();
+  //   events = eventsData || [];
+  // } catch (error) {
+  //   console.error("Error fetching events:", error);
+  // }
 
   return (
     <section className="text-white py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
