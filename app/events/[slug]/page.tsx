@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cacheLife } from "next/cache";
 import type { IEvent } from "@/database";
 import EventInfoSpan from "@/components/EventInfoSpan";
 import EventBookingCta from "@/components/EventBookingCta";
@@ -9,6 +10,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 if (!BASE_URL) throw new Error("Environment variable is not configured");
 
 const page = async({ params }: { params: Promise<{slug: string}> }) => {
+
+    'use cache'
+    cacheLife('hours')
 
     const {slug} = await params;
     
